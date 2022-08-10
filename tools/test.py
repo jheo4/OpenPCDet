@@ -181,6 +181,12 @@ def main():
 
     ckpt_dir = args.ckpt_dir if args.ckpt_dir is not None else output_dir / 'ckpt'
 
+    print('========================================================================================================')
+    print(cfg.DATA_CONFIG)
+    print(cfg.CLASS_NAMES)
+    print(dist_test)
+    print('========================================================================================================')
+
     test_set, test_loader, sampler = build_dataloader(
         dataset_cfg=cfg.DATA_CONFIG,
         class_names=cfg.CLASS_NAMES,
