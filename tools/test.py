@@ -38,6 +38,9 @@ def parse_config():
     parser.add_argument('--eval_tag', type=str, default='default', help='eval tag for this experiment')
     parser.add_argument('--eval_all', action='store_true', default=False, help='whether to evaluate all checkpoints')
     parser.add_argument('--ckpt_dir', type=str, default=None, help='specify a ckpt directory to be evaluated if needed')
+
+    parser.add_argument('--output_dir', type=str, default=None, help='my output directory')
+
     parser.add_argument('--save_to_file', action='store_true', default=False, help='')
     parser.add_argument('--infer_time', action='store_true', default=False, help='calculate inference latency')
 
@@ -156,9 +159,12 @@ def main():
         assert args.batch_size % total_gpus == 0, 'Batch size should match the number of gpus'
         args.batch_size = args.batch_size // total_gpus
 
-    output_dir = cfg.ROOT_DIR / 'output' / cfg.EXP_GROUP_PATH / cfg.TAG / args.extra_tag
-    output_dir.mkdir(parents=True, exist_ok=True)
+    if args.output_dir is None:
+        output_dir = cfg.ROOT_DIR / 'output' / cfg.EXP_GROUP_PATH / cfg.TAG / args.extra_tag
+    else:
+        output_dir = Path(args.output_dir)
 
+    output_dir.mkdir(parents=True, exist_ok=True)
     eval_output_dir = output_dir / 'eval'
 
     if not args.eval_all:

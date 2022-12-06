@@ -11,7 +11,7 @@ DATA_CONFIG:
               # AUG_WITH_IMAGE: True # use PC-Image Aug
               IMG_AUG_TYPE: kitti
 
-              USE_ROAD_PLANE: True
+              USE_ROAD_PLANE: False
               DB_INFO_PATH:
                   - kitti_dbinfos_train.pkl
               PREPARE: {
