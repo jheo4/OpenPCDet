@@ -9,15 +9,15 @@ from pcdet.utils import common_utils, commu_utils
 
 
 def train_one_epoch(model, optimizer, train_loader, model_func, lr_scheduler, accumulated_iter, optim_cfg,
-                    rank, tbar, total_it_each_epoch, dataloader_iter, tb_log=None, leave_pbar=False, 
-                    use_logger_to_record=False, logger=None, logger_iter_interval=50, cur_epoch=None, 
+                    rank, tbar, total_it_each_epoch, dataloader_iter, tb_log=None, leave_pbar=False,
+                    use_logger_to_record=False, logger=None, logger_iter_interval=50, cur_epoch=None,
                     total_epochs=None, ckpt_save_dir=None, ckpt_save_time_interval=300, show_gpu_stat=False):
     if total_it_each_epoch == len(train_loader):
         dataloader_iter = iter(train_loader)
 
     ckpt_save_cnt = 1
     start_it = accumulated_iter % total_it_each_epoch
-    
+
     if rank == 0:
         pbar = tqdm.tqdm(total=total_it_each_epoch, leave=leave_pbar, desc='train', dynamic_ncols=True)
         data_time = common_utils.AverageMeter()
@@ -25,6 +25,7 @@ def train_one_epoch(model, optimizer, train_loader, model_func, lr_scheduler, ac
         forward_time = common_utils.AverageMeter()
 
     end = time.time()
+    print(f"StartIT {start_it}, {total_it_each_epoch}")
     for cur_it in range(start_it, total_it_each_epoch):
         try:
             batch = next(dataloader_iter)
@@ -32,7 +33,7 @@ def train_one_epoch(model, optimizer, train_loader, model_func, lr_scheduler, ac
             dataloader_iter = iter(train_loader)
             batch = next(dataloader_iter)
             print('new iters')
-        
+
         data_timer = time.time()
         cur_data_time = data_timer - end
 
@@ -56,7 +57,7 @@ def train_one_epoch(model, optimizer, train_loader, model_func, lr_scheduler, ac
         optimizer.step()
 
         accumulated_iter += 1
- 
+
         cur_forward_time = time.time() - data_timer
         cur_batch_time = time.time() - end
         end = time.time()
@@ -71,12 +72,12 @@ def train_one_epoch(model, optimizer, train_loader, model_func, lr_scheduler, ac
             data_time.update(avg_data_time)
             forward_time.update(avg_forward_time)
             batch_time.update(avg_batch_time)
-            
+
             disp_dict.update({
                 'loss': loss.item(), 'lr': cur_lr, 'd_time': f'{data_time.val:.2f}({data_time.avg:.2f})',
                 'f_time': f'{forward_time.val:.2f}({forward_time.avg:.2f})', 'b_time': f'{batch_time.val:.2f}({batch_time.avg:.2f})'
             })
-            
+
             if use_logger_to_record:
                 if accumulated_iter % logger_iter_interval == 0 or cur_it == start_it or cur_it + 1 == total_it_each_epoch:
                     trained_time_past_all = tbar.format_dict['elapsed']
@@ -97,7 +98,7 @@ def train_one_epoch(model, optimizer, train_loader, model_func, lr_scheduler, ac
                         # To show the GPU utilization, please install gpustat through "pip install gpustat"
                         gpu_info = os.popen('gpustat').read()
                         logger.info(gpu_info)
-            else:                
+            else:
                 pbar.update()
                 pbar.set_postfix(dict(total_it=accumulated_iter))
                 tbar.set_postfix(disp_dict)
@@ -108,8 +109,8 @@ def train_one_epoch(model, optimizer, train_loader, model_func, lr_scheduler, ac
                 tb_log.add_scalar('meta_data/learning_rate', cur_lr, accumulated_iter)
                 for key, val in tb_dict.items():
                     tb_log.add_scalar('train/' + key, val, accumulated_iter)
-            
-            # save intermediate ckpt every {ckpt_save_time_interval} seconds         
+
+            # save intermediate ckpt every {ckpt_save_time_interval} seconds
             time_past_this_epoch = pbar.format_dict['elapsed']
             if time_past_this_epoch // ckpt_save_time_interval >= ckpt_save_cnt:
                 ckpt_name = ckpt_save_dir / 'latest_model'
@@ -118,7 +119,7 @@ def train_one_epoch(model, optimizer, train_loader, model_func, lr_scheduler, ac
                 )
                 logger.info(f'Save latest model to {ckpt_name}')
                 ckpt_save_cnt += 1
-                
+
     if rank == 0:
         pbar.close()
     return accumulated_iter
@@ -127,7 +128,7 @@ def train_one_epoch(model, optimizer, train_loader, model_func, lr_scheduler, ac
 def train_model(model, optimizer, train_loader, model_func, lr_scheduler, optim_cfg,
                 start_epoch, total_epochs, start_iter, rank, tb_log, ckpt_save_dir, train_sampler=None,
                 lr_warmup_scheduler=None, ckpt_save_interval=1, max_ckpt_save_num=50,
-                merge_all_iters_to_one_epoch=False, 
+                merge_all_iters_to_one_epoch=False,
                 use_logger_to_record=False, logger=None, logger_iter_interval=None, ckpt_save_time_interval=None, show_gpu_stat=False):
     accumulated_iter = start_iter
     with tqdm.trange(start_epoch, total_epochs, desc='epochs', dynamic_ncols=True, leave=(rank == 0)) as tbar:
@@ -154,12 +155,12 @@ def train_model(model, optimizer, train_loader, model_func, lr_scheduler, optim_
                 rank=rank, tbar=tbar, tb_log=tb_log,
                 leave_pbar=(cur_epoch + 1 == total_epochs),
                 total_it_each_epoch=total_it_each_epoch,
-                dataloader_iter=dataloader_iter, 
-                
+                dataloader_iter=dataloader_iter,
+
                 cur_epoch=cur_epoch, total_epochs=total_epochs,
-                use_logger_to_record=use_logger_to_record, 
+                use_logger_to_record=use_logger_to_record,
                 logger=logger, logger_iter_interval=logger_iter_interval,
-                ckpt_save_dir=ckpt_save_dir, ckpt_save_time_interval=ckpt_save_time_interval, 
+                ckpt_save_dir=ckpt_save_dir, ckpt_save_time_interval=ckpt_save_time_interval,
                 show_gpu_stat=show_gpu_stat
             )
 

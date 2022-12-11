@@ -6,36 +6,31 @@ import shutil
 tester = 'python /home/jin/mnt/github/OpenPCDet/tools/test.py'
 
 widths    = [2048, 1024, 512, 256]
-# intr_ints = [1.25, 1.5, 1.75]
-intr_ints = [2]
+intr_ints = [1.25, 1.5, 1.75, 2]
 
 output_root = '/home/jin/mnt/Data/KITTI/results/preT_orig4500_myinter/'
 
 models = ['parta2',
-        # 'parta2_free',
-        # 'pointpillar',
-        # 'pointrcnn',
-        # 'pointrcnn_iou',
-        # 'pv_rcnn',
-        # 'second',
-        # 'second_iou',
-        # 'voxel_rcnn_car'
+          'pointpillar',
+          'pointrcnn',
+          'pv_rcnn',
+          'second',
         ]
 
 model_ckpts = [
         '/home/jin/mnt/Data/KITTI/pretrained_models/original/PartA2_7940.pth',
+        '/home/jin/mnt/Data/KITTI/pretrained_models/original/pointpillar_7728.pth',
+        '/home/jin/mnt/Data/KITTI/pretrained_models/original/pointrcnn_7870.pth',
+        '/home/jin/mnt/Data/KITTI/pretrained_models/original/pv_rcnn_8369.pth',
+        '/home/jin/mnt/Data/KITTI/pretrained_models/original/second_7862.pth',
         ]
 
 cfg_files = [
         '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/PartA2.yaml',
-        # '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/PartA2_free.yaml',
-        # '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/pointpillar.yaml',
-        # '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/pointrcnn.yaml',
-        # '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/pointrcnn_iou.yaml',
-        # '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/pv_rcnn.yaml',
-        # '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/second.yaml',
-        # '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/second_iou.yaml',
-        # '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/voxel_rcnn_car.yaml'
+        '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/pointpillar.yaml',
+        '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/pointrcnn.yaml',
+        '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/pv_rcnn.yaml',
+        '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/second.yaml',
         ]
 
 data_root = '/home/jin/mnt/Data/KITTI/interpolation0.5/'
