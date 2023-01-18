@@ -6,34 +6,32 @@ import shutil
 tester = 'python /home/jin/mnt/github/OpenPCDet/tools/test.py'
 
 widths    = [4500, 2048, 1024, 512, 256]
+widths    = [1024, 512, 256]
 
 output_root = '/home/jin/mnt/Data/KITTI/results/preT_orig4500_orig/'
 
-models = ['parta2',
-        # 'parta2_free',
+models = [
+        # 'parta2',
         # 'pointpillar',
-        # 'pointrcnn',
-        # 'pointrcnn_iou',
+        'pointrcnn',
         # 'pv_rcnn',
         # 'second',
-        # 'second_iou',
-        # 'voxel_rcnn_car'
         ]
 
 model_ckpts = [
-        '/home/jin/mnt/Data/KITTI/pretrained_models/original/PartA2_7940.pth',
+        # '/home/jin/mnt/Data/KITTI/pretrained_models/original/PartA2_7940.pth',
+        # '/home/jin/mnt/Data/KITTI/pretrained_models/original/pointpillar_7728.pth',   # 80
+        '/home/jin/mnt/Data/KITTI/pretrained_models/original/pointrcnn_7870.pth',     # 77
+        # '/home/jin/mnt/Data/KITTI/pretrained_models/original/pv_rcnn_8369.pth',       # 77
+        # '/home/jin/mnt/Data/KITTI/pretrained_models/original/second_7862.pth',        # 80
         ]
 
 cfg_files = [
-        '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/PartA2.yaml',
-        # '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/PartA2_free.yaml',
+        # '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/PartA2.yaml',
         # '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/pointpillar.yaml',
-        # '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/pointrcnn.yaml',
-        # '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/pointrcnn_iou.yaml',
+        '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/pointrcnn.yaml',
         # '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/pv_rcnn.yaml',
         # '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/second.yaml',
-        # '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/second_iou.yaml',
-        # '/home/jin/mnt/github/OpenPCDet/tools/cfgs/kitti_models/voxel_rcnn_car.yaml'
         ]
 
 data_root = '/home/jin/mnt/Data/KITTI/original/'
@@ -50,7 +48,7 @@ for width in widths:
 
     for model, model_ckpt, cfg_file in zip(models, model_ckpts, cfg_files):
         output_dir = output_root + str(width)+ '/' + model
-        command = f"{tester} --cfg_file {cfg_file} --batch_size 24 --ckpt {model_ckpt} --save_to_file --output_dir {output_dir}"
+        command = f"{tester} --cfg_file {cfg_file} --batch_size 4 --ckpt {model_ckpt} --save_to_file --output_dir {output_dir}"
         print(command)
         os.system(command)
     #    python train.py --cfg_file cfgs/kitti_models/pv_rcnn.yaml --batch_size 4 --epochs 5 --save_to_file --output_dir ""
